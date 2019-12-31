@@ -9,6 +9,8 @@ import (
 	"fmt"
 )
 
+var SQLBinaryValue = false
+
 // Scan implements sql.Scanner so UUIDs can be read from databases transparently
 // Currently, database types that map to string and []byte are supported. Please
 // consult database-specific driver documentation for matching types.
@@ -55,5 +57,8 @@ func (uuid *UUID) Scan(src interface{}) error {
 // transparently. Currently, UUIDs map to strings. Please consult
 // database-specific driver documentation for matching types.
 func (uuid UUID) Value() (driver.Value, error) {
+	if SQLBinaryValue {
+		return uuid.MarshalBinary()
+	}
 	return uuid.String(), nil
 }
